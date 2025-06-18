@@ -405,6 +405,11 @@
                     <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
                 </div>
             </div>
+            <div style="margin-top: 1rem;">
+                <input type="url" id="imageUrl" placeholder="Or paste image URL here..." style="width: 70%; padding: 0.5rem; border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 5px; margin-right: 0.5rem;">
+                <button onclick="addImageFromUrl()" style="padding: 0.5rem 1rem; background: linear-gradient(45deg, #667eea, #f5576c); color: white; border: none; border-radius: 5px; cursor: pointer;">Add URL</button>
+            </div>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">💡 Tip: You can also paste images with Ctrl+V</p>
             <div class="reference-images" id="referenceImages">
                 <!-- Reference images will appear here -->
             </div>
@@ -642,6 +647,94 @@
 
         // Initialize drag and drop when page loads
         document.addEventListener('DOMContentLoaded', initializeDragDrop);
+
+        // Add paste functionality
+        document.addEventListener('paste', handlePaste);
+
+        // Add URL image functionality
+        async function addImageFromUrl() {
+            const urlInput = document.getElementById('imageUrl');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                alert('Please enter an image URL!');
+                return;
+            }
+
+            try {
+                // Test if the URL is a valid image
+                const img = new Image();
+                img.onload = function() {
+                    // Convert to canvas to get data URL
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const dataUrl = canvas.toDataURL('image/png');
+                    referenceImages.push({
+                        dataUrl: dataUrl,
+                        name: `URL Image ${referenceImages.length + 1}`
+                    });
+                    displayReferenceImages();
+                    urlInput.value = ''; // Clear the input
+                };
+                img.onerror = function() {
+                    alert('Failed to load image from URL. Please check the URL and try again.');
+                };
+                img.crossOrigin = 'anonymous'; // Handle CORS
+                img.src = url;
+            } catch (error) {
+                console.error('Error loading image from URL:', error);
+                alert('Failed to load image from URL. Please try again.');
+            }
+        }
+
+        // Handle paste events
+        function handlePaste(e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                
+                // Handle pasted images
+                if (item.type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        referenceImages.push({
+                            dataUrl: event.target.result,
+                            name: `Pasted Image ${referenceImages.length + 1}`
+                        });
+                        displayReferenceImages();
+                    };
+                    reader.readAsDataURL(blob);
+                    return;
+                }
+                
+                // Handle pasted URLs (text that looks like image URLs)
+                if (item.type === 'text/plain') {
+                    item.getAsString(function(text) {
+                        // Check if the pasted text looks like an image URL
+                        const imageUrlPattern = /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
+                        if (imageUrlPattern.test(text.trim())) {
+                            document.getElementById('imageUrl').value = text.trim();
+                            // Optionally auto-add the URL
+                            setTimeout(() => addImageFromUrl(), 100);
+                        }
+                    });
+                }
+            }
+        }
+
+        // Allow Enter key to add URL
+        document.getElementById('imageUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addImageFromUrl();
+            }
+        });
     </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
