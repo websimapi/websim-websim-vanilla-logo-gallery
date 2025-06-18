@@ -133,6 +133,47 @@
             margin-bottom: 2rem;
         }
 
+        .reference-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .reference-section h3 {
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #667eea, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .reference-images {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .reference-image {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .reference-image img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .reference-image p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
         .input-group {
             margin-bottom: 1.5rem;
         }
@@ -295,6 +336,20 @@
     </div>
 
     <div class="generator-container">
+        <div class="reference-section">
+            <h3>Reference Images for Color Palette</h3>
+            <div class="reference-images">
+                <div class="reference-image">
+                    <img src="/a/7fd0da90-4658-48b7-91ea-26597c39bbad" alt="Websim Reference 1">
+                    <p>Color Reference 1</p>
+                </div>
+                <div class="reference-image">
+                    <img src="/a/51715d5d-3cca-4ec3-aeea-5be53a512ee4" alt="Websim Reference 2">
+                    <p>Color Reference 2</p>
+                </div>
+            </div>
+        </div>
+
         <div class="input-group">
             <label for="logoPrompt">Logo Description</label>
             <textarea id="logoPrompt" rows="3" placeholder="Describe your vanilla ice cream themed Websim logo...">A minimalist vanilla ice cream logo for Websim, featuring a clean ice cream scoop or cone with the letter "W" integrated into the design, using soft cream colors and modern typography</textarea>
@@ -369,29 +424,58 @@
 
             // Disable button and show loading
             generateBtn.disabled = true;
-            generateBtn.innerHTML = '<div class="spinner"></div>Generating Logo...';
+            generateBtn.innerHTML = '<div class="spinner"></div>Analyzing references and generating...';
 
             try {
-                // Build the full prompt
+                // First, analyze the reference images for color palette
+                const colorAnalysis = await websim.chat.completions.create({
+                    messages: [
+                        {
+                            role: "system",
+                            content: `You are a color palette expert. Analyze these reference images and extract a detailed color palette description for logo design. Focus on the specific hex codes, gradients, and color relationships that would work well for a Websim Vanilla logo.`
+                        },
+                        {
+                            role: "user",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: "Analyze these Websim reference images and provide a detailed color palette description for creating a vanilla ice cream themed logo. Include specific colors, gradients, and how they should be used."
+                                },
+                                {
+                                    type: "image_url",
+                                    image_url: { url: "/a/7fd0da90-4658-48b7-91ea-26597c39bbad" }
+                                },
+                                {
+                                    type: "image_url", 
+                                    image_url: { url: "/a/51715d5d-3cca-4ec3-aeea-5be53a512ee4" }
+                                }
+                            ]
+                        }
+                    ]
+                });
+
+                const detailedColorPalette = colorAnalysis.content;
+
+                // Build the full prompt with enhanced color information
                 let fullPrompt = `${prompt}, ${style} style`;
                 
-                // Add color scheme context
+                // Add enhanced color scheme context based on AI analysis
                 switch(colorScheme) {
                     case 'vanilla':
-                        fullPrompt += ', vanilla cream colors (beige, cream, light brown, off-white)';
+                        fullPrompt += `, vanilla cream colors (beige, cream, light brown, off-white) combined with: ${detailedColorPalette}`;
                         break;
                     case 'websim':
-                        fullPrompt += ', Websim brand colors (blue, purple, teal gradients)';
+                        fullPrompt += `, using these specific Websim brand colors: ${detailedColorPalette}`;
                         break;
                     case 'mixed':
-                        fullPrompt += ', mixing vanilla cream colors with Websim brand colors (blue, purple, teal)';
+                        fullPrompt += `, mixing vanilla cream colors with Websim brand colors: ${detailedColorPalette}`;
                         break;
                     case 'monochrome':
-                        fullPrompt += ', monochrome design, black and white';
+                        fullPrompt += `, monochrome design based on the tonal values from: ${detailedColorPalette}`;
                         break;
                 }
 
-                fullPrompt += ', logo design, clean background, professional, high quality';
+                fullPrompt += ', logo design, clean background, professional, high quality, vector-style illustration';
 
                 // Generate the image
                 const result = await websim.imageGen({
@@ -404,6 +488,7 @@
                 const logoData = {
                     url: result.url,
                     prompt: fullPrompt,
+                    colorAnalysis: detailedColorPalette,
                     timestamp: new Date().toLocaleTimeString()
                 };
 
@@ -431,6 +516,7 @@
                     <div class="logo-title">Generated Logo #${generatedLogos.length - index}</div>
                     <div class="logo-description">Created at ${logo.timestamp}</div>
                     <div class="prompt-used">"${logo.prompt}"</div>
+                    ${logo.colorAnalysis ? `<div class="prompt-used"><strong>Color Analysis:</strong> ${logo.colorAnalysis.substring(0, 150)}...</div>` : ''}
                     <div class="rating-stars">
                         <span class="star">⭐</span>
                         <span class="star">⭐</span>
