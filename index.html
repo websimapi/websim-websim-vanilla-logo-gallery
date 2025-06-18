@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Websim Vanilla Logo Gallery</title>
+    <title>Websim Vanilla Logo Generator</title>
     <style>
         * {
             margin: 0;
@@ -120,448 +120,346 @@
         .star.active {
             color: #f5576c;
         }
+
+        .generator-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #667eea, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #667eea, #f5576c);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .result-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .result-image {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(245, 87, 108, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .result-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .preset-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .preset-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .prompt-used {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🍦 Websim Vanilla Logo Gallery</h1>
-        <p>Exploring logo concepts that blend the sweetness of vanilla ice cream with the simplicity of vanilla design philosophy. Rate your favorites!</p>
+        <h1>🍦 Websim Vanilla Logo Generator</h1>
+        <p>Create the perfect vanilla ice cream themed logo for Websim using AI. Blend the sweetness of vanilla with the simplicity of clean design!</p>
     </div>
 
-    <div class="logo-grid">
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-minimal-scoop.png" alt="Minimal Scoop Logo">
-            </div>
-            <div class="logo-title">Minimal Scoop</div>
-            <div class="logo-description">Clean, minimalist ice cream scoop with "Websim" text in modern typography</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
+    <div class="generator-container">
+        <div class="input-group">
+            <label for="logoPrompt">Logo Description</label>
+            <textarea id="logoPrompt" rows="3" placeholder="Describe your vanilla ice cream themed Websim logo...">A minimalist vanilla ice cream logo for Websim, featuring a clean ice cream scoop or cone with the letter "W" integrated into the design, using soft cream colors and modern typography</textarea>
         </div>
 
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-geometric-cone.png" alt="Geometric Cone Logo">
-            </div>
-            <div class="logo-title">Geometric Cone</div>
-            <div class="logo-description">Abstract geometric ice cream cone with vanilla color palette and clean lines</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
+        <div class="input-group">
+            <label for="logoStyle">Style</label>
+            <select id="logoStyle">
+                <option value="minimalist">Minimalist</option>
+                <option value="vintage">Vintage</option>
+                <option value="modern">Modern</option>
+                <option value="geometric">Geometric</option>
+                <option value="playful">Playful</option>
+                <option value="professional">Professional</option>
+            </select>
         </div>
 
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-simple-w.png" alt="Simple W Logo">
-            </div>
-            <div class="logo-title">Simple W</div>
-            <div class="logo-description">Minimalist "W" lettermark with vanilla cream texture and subtle ice cream elements</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
+        <div class="input-group">
+            <label for="colorScheme">Color Scheme</label>
+            <select id="colorScheme">
+                <option value="vanilla">Vanilla Cream (beige, cream, light brown)</option>
+                <option value="websim">Websim Colors (blue, purple, teal)</option>
+                <option value="mixed">Mixed (vanilla + websim)</option>
+                <option value="monochrome">Monochrome</option>
+            </select>
         </div>
 
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-vanilla-bean.png" alt="Vanilla Bean Logo">
-            </div>
-            <div class="logo-title">Vanilla Bean</div>
-            <div class="logo-description">Elegant vanilla bean pod integrated with modern web symbols and clean typography</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="setPreset('ice-cream-cone')">🍦 Ice Cream Cone</button>
+            <button class="preset-btn" onclick="setPreset('scoop-w')">🫘 Scoop with W</button>
+            <button class="preset-btn" onclick="setPreset('vanilla-bean')">🫘 Vanilla Bean</button>
+            <button class="preset-btn" onclick="setPreset('drip-logo')">💧 Dripping Logo</button>
+            <button class="preset-btn" onclick="setPreset('badge-design')">🏷️ Badge Design</button>
         </div>
 
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-ice-cream-code.png" alt="Ice Cream Code Logo">
-            </div>
-            <div class="logo-title">Ice Cream Code</div>
-            <div class="logo-description">Ice cream scoop with subtle code brackets, representing web development simplicity</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
+        <button class="generate-btn" onclick="generateLogo()" id="generateBtn">
+            🎨 Generate Vanilla Logo
+        </button>
+    </div>
 
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-cream-swirl.png" alt="Cream Swirl Logo">
-            </div>
-            <div class="logo-title">Cream Swirl</div>
-            <div class="logo-description">Elegant cream swirl pattern forming a "W" shape with vanilla color gradients</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-vintage-scoop.png" alt="Vintage Scoop Logo">
-            </div>
-            <div class="logo-title">Vintage Scoop</div>
-            <div class="logo-description">Retro-inspired ice cream scoop with classic diner aesthetics and warm vanilla tones</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-modern-badge.png" alt="Modern Badge Logo">
-            </div>
-            <div class="logo-title">Modern Badge</div>
-            <div class="logo-description">Contemporary badge design with ice cream elements and "Vanilla" emphasis</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-clean.png" alt="Websim Clean Logo">
-            </div>
-            <div class="logo-title">Websim Clean</div>
-            <div class="logo-description">Clean, minimalist geometric "W" with "Websim" text in modern typography</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-geometric.png" alt="Websim Geometric Logo">
-            </div>
-            <div class="logo-title">Websim Geometric</div>
-            <div class="logo-description">Abstract geometric shapes in Websim brand colors with clean tech aesthetics</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-minimal.png" alt="Websim Minimal Logo">
-            </div>
-            <div class="logo-title">Websim Minimal</div>
-            <div class="logo-description">Minimalist "W" lettermark with Websim colors and subtle digital grid elements</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-nodes.png" alt="Websim Nodes Logo">
-            </div>
-            <div class="logo-title">Websim Nodes</div>
-            <div class="logo-description">Connected nodes and network elements integrated with modern web design symbols</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-circuit.png" alt="Websim Circuit Logo">
-            </div>
-            <div class="logo-title">Websim Circuit</div>
-            <div class="logo-description">"W" with subtle circuit patterns, representing web development and digital simulation</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-flow.png" alt="Websim Flow Logo">
-            </div>
-            <div class="logo-title">Websim Flow</div>
-            <div class="logo-description">Dynamic digital flow pattern forming a "W" shape with Websim gradient colors</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-gradient.png" alt="Websim Gradient Logo">
-            </div>
-            <div class="logo-title">Websim Gradient</div>
-            <div class="logo-description">Modern gradient "W" using Websim's signature blues, purples, and teals</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-badge.png" alt="Websim Badge Logo">
-            </div>
-            <div class="logo-title">Websim Badge</div>
-            <div class="logo-description">Contemporary badge design with digital elements and Websim brand colors</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-simple.png" alt="Websim Vanilla Simple Logo">
-            </div>
-            <div class="logo-title">Vanilla Simple</div>
-            <div class="logo-description">Clean minimalist "W" in Websim colors with emphasis on simplicity and modern design</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-badge.png" alt="Websim Vanilla Badge Logo">
-            </div>
-            <div class="logo-title">Vanilla Badge</div>
-            <div class="logo-description">Circular badge design with Websim gradient colors and clean professional appearance</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-geometric.png" alt="Websim Vanilla Geometric Logo">
-            </div>
-            <div class="logo-title">Vanilla Geometric</div>
-            <div class="logo-description">Abstract geometric "W" with interconnected nodes representing web connectivity</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-gradient.png" alt="Websim Vanilla Gradient Logo">
-            </div>
-            <div class="logo-title">Vanilla Gradient</div>
-            <div class="logo-description">Bold gradient "W" using Websim's signature blue to teal color transition</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-flow.png" alt="Websim Vanilla Flow Logo">
-            </div>
-            <div class="logo-title">Vanilla Flow</div>
-            <div class="logo-description">Dynamic flowing pattern forming "W" shape with smooth digital curves</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-tech.png" alt="Websim Vanilla Tech Logo">
-            </div>
-            <div class="logo-title">Vanilla Tech</div>
-            <div class="logo-description">Stylized "W" with circuit patterns representing web simulation and tech innovation</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-nodes.png" alt="Websim Vanilla Nodes Logo">
-            </div>
-            <div class="logo-title">Vanilla Nodes</div>
-            <div class="logo-description">Connected nodes forming "W" pattern representing network simplicity</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-minimal.png" alt="Websim Vanilla Minimal Logo">
-            </div>
-            <div class="logo-title">Vanilla Minimal</div>
-            <div class="logo-description">Ultra-minimalist design emphasizing pure simplicity and clean typography</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-hexagon.png" alt="Websim Vanilla Hexagon Logo">
-            </div>
-            <div class="logo-title">Vanilla Hexagon</div>
-            <div class="logo-description">Hexagonal badge with geometric precision and modern tech aesthetic</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-wave.png" alt="Websim Vanilla Wave Logo">
-            </div>
-            <div class="logo-title">Vanilla Wave</div>
-            <div class="logo-description">Stylized wave pattern representing digital flow and web development rhythm</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-diamond.png" alt="Websim Vanilla Diamond Logo">
-            </div>
-            <div class="logo-title">Vanilla Diamond</div>
-            <div class="logo-description">Diamond-shaped design with sharp modern lines and geometric precision</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
-        </div>
-
-        <div class="logo-card">
-            <div class="logo-container">
-                <img src="logo-websim-vanilla-pulse.png" alt="Websim Vanilla Pulse Logo">
-            </div>
-            <div class="logo-title">Vanilla Pulse</div>
-            <div class="logo-description">Audio wave pattern forming "W" representing digital signals and web rhythm</div>
-            <div class="rating-stars">
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-                <span class="star">⭐</span>
-            </div>
+    <div class="results-container">
+        <div class="results-grid" id="results">
+            <!-- Generated logos will appear here -->
         </div>
     </div>
 
     <script>
-        // Simple star rating functionality
-        document.querySelectorAll('.rating-stars').forEach(starContainer => {
-            const stars = starContainer.querySelectorAll('.star');
+        let generatedLogos = [];
+
+        const presets = {
+            'ice-cream-cone': 'A minimalist vanilla ice cream cone logo for Websim, featuring a geometric cone with perfect vanilla scoop on top, clean lines, cream and beige colors, with subtle "W" letterform integrated into the cone design',
+            'scoop-w': 'A vanilla ice cream scoop shaped like the letter "W" for Websim, creamy texture, soft vanilla colors, modern minimalist design with clean typography',
+            'vanilla-bean': 'An elegant vanilla bean pod logo for Websim, sophisticated brown vanilla bean with modern web design elements, clean professional appearance',
+            'drip-logo': 'A playful vanilla ice cream dripping logo for Websim, melting vanilla ice cream forming "W" shape, soft cream colors with gentle drip effects',
+            'badge-design': 'A circular badge logo for Websim featuring vanilla ice cream elements, modern flat design with vanilla color scheme, clean professional appearance'
+        };
+
+        function setPreset(presetKey) {
+            document.getElementById('logoPrompt').value = presets[presetKey];
+        }
+
+        async function generateLogo() {
+            const prompt = document.getElementById('logoPrompt').value;
+            const style = document.getElementById('logoStyle').value;
+            const colorScheme = document.getElementById('colorScheme').value;
+            const generateBtn = document.getElementById('generateBtn');
             
-            stars.forEach((star, index) => {
-                star.addEventListener('click', () => {
-                    stars.forEach((s, i) => {
-                        s.classList.toggle('active', i <= index);
+            if (!prompt.trim()) {
+                alert('Please enter a logo description!');
+                return;
+            }
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="spinner"></div>Generating Logo...';
+
+            try {
+                // Build the full prompt
+                let fullPrompt = `${prompt}, ${style} style`;
+                
+                // Add color scheme context
+                switch(colorScheme) {
+                    case 'vanilla':
+                        fullPrompt += ', vanilla cream colors (beige, cream, light brown, off-white)';
+                        break;
+                    case 'websim':
+                        fullPrompt += ', Websim brand colors (blue, purple, teal gradients)';
+                        break;
+                    case 'mixed':
+                        fullPrompt += ', mixing vanilla cream colors with Websim brand colors (blue, purple, teal)';
+                        break;
+                    case 'monochrome':
+                        fullPrompt += ', monochrome design, black and white';
+                        break;
+                }
+
+                fullPrompt += ', logo design, clean background, professional, high quality';
+
+                // Generate the image
+                const result = await websim.imageGen({
+                    prompt: fullPrompt,
+                    transparent: true,
+                    aspect_ratio: "1:1"
+                });
+
+                // Add to results
+                const logoData = {
+                    url: result.url,
+                    prompt: fullPrompt,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+
+                generatedLogos.unshift(logoData);
+                displayResults();
+
+            } catch (error) {
+                console.error('Error generating logo:', error);
+                alert('Failed to generate logo. Please try again!');
+            } finally {
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '🎨 Generate Vanilla Logo';
+            }
+        }
+
+        function displayResults() {
+            const resultsContainer = document.getElementById('results');
+            
+            resultsContainer.innerHTML = generatedLogos.map((logo, index) => `
+                <div class="result-card">
+                    <div class="result-image">
+                        <img src="${logo.url}" alt="Generated Websim Vanilla Logo">
+                    </div>
+                    <div class="logo-title">Generated Logo #${generatedLogos.length - index}</div>
+                    <div class="logo-description">Created at ${logo.timestamp}</div>
+                    <div class="prompt-used">"${logo.prompt}"</div>
+                    <div class="rating-stars">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-add star rating functionality
+            document.querySelectorAll('.rating-stars').forEach(starContainer => {
+                const stars = starContainer.querySelectorAll('.star');
+                
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', () => {
+                        stars.forEach((s, i) => {
+                            s.classList.toggle('active', i <= index);
+                        });
                     });
                 });
             });
+        }
+
+        // Allow Enter key to generate
+        document.getElementById('logoPrompt').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                generateLogo();
+            }
         });
     </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
