@@ -396,6 +396,13 @@
         </div>
 
         <div class="input-group">
+            <label for="transparentBg">
+                <input type="checkbox" id="transparentBg" style="margin-right: 0.5rem;">
+                Generate with transparent background
+            </label>
+        </div>
+
+        <div class="input-group">
             <label for="referenceImages">Reference Images</label>
             <div class="drag-drop-area" id="dragDropArea">
                 <div class="drag-drop-content">
@@ -586,9 +593,6 @@ Focus specifically on colors that would work well for a Websim Vanilla logo desi
 
                     // Use extracted colors instead of predefined color scheme
                     fullPrompt = `${fullPrompt}. Color palette: ${colorAnalysis.content}. Design style: ${styleAnalysis.content}`;
-                    
-                    // Update loading message
-                    generateBtn.innerHTML = '<div class="spinner"></div>Generating Logo...';
                 } else {
                     // Add color scheme context only if no reference images
                     switch(colorScheme) {
@@ -609,20 +613,55 @@ Focus specifically on colors that would work well for a Websim Vanilla logo desi
 
                 fullPrompt += ', logo design, clean background, professional, high quality';
 
-                // Generate the image
-                const result = await websim.imageGen({
-                    prompt: fullPrompt,
-                    transparent: true,
-                    aspect_ratio: "1:1"
+                // Update loading message for AI refinement
+                generateBtn.innerHTML = '<div class="spinner"></div>Refining Description...';
+
+                // Use AI to refine and condense the prompt
+                const refinementPrompt = `Take this logo description and refine it into a single, condensed yet detailed paragraph that would be perfect for AI image generation. Make it clear, specific, and comprehensive while removing any redundancy:
+
+"${fullPrompt}"
+
+Respond with only the refined description, no additional text.`;
+
+                const refinedResult = await websim.chat.completions.create({
+                    messages: [
+                        {
+                            role: "user",
+                            content: refinementPrompt
+                        }
+                    ]
                 });
+
+                const finalPrompt = refinedResult.content;
+
+                // Update loading message
+                generateBtn.innerHTML = '<div class="spinner"></div>Generating Logo...';
+
+                // Check if transparency is selected
+                const transparent = document.getElementById('transparentBg').checked;
+
+                // Generate the image
+                const imageGenOptions = {
+                    prompt: finalPrompt,
+                    aspect_ratio: "1:1"
+                };
+
+                // Only add transparency if selected
+                if (transparent) {
+                    imageGenOptions.transparent = true;
+                }
+
+                const result = await websim.imageGen(imageGenOptions);
 
                 // Add to results
                 const logoData = {
                     url: result.url,
-                    prompt: fullPrompt,
+                    originalPrompt: prompt,
+                    finalPrompt: finalPrompt,
                     timestamp: new Date().toLocaleTimeString(),
                     hasReferences: referenceImages.length > 0,
-                    colorExtracted: referenceImages.length > 0
+                    colorExtracted: referenceImages.length > 0,
+                    transparent: transparent
                 };
 
                 generatedLogos.unshift(logoData);
@@ -646,9 +685,12 @@ Focus specifically on colors that would work well for a Websim Vanilla logo desi
                     <div class="result-image">
                         <img src="${logo.url}" alt="Generated Websim Vanilla Logo">
                     </div>
-                    <div class="logo-title">Generated Logo #${generatedLogos.length - index} ${logo.hasReferences ? '📎' : ''} ${logo.colorExtracted ? '🎨' : ''}</div>
+                    <div class="logo-title">Generated Logo #${generatedLogos.length - index} ${logo.hasReferences ? '📎' : ''} ${logo.colorExtracted ? '🎨' : ''} ${logo.transparent ? '🔍' : ''}</div>
                     <div class="logo-description">Created at ${logo.timestamp}</div>
-                    <div class="prompt-used">"${logo.prompt}"</div>
+                    <div class="prompt-used">
+                        <strong>Original:</strong> "${logo.originalPrompt}"<br>
+                        <strong>AI Refined:</strong> "${logo.finalPrompt}"
+                    </div>
                     <div class="rating-stars">
                         <span class="star">⭐</span>
                         <span class="star">⭐</span>
