@@ -409,7 +409,7 @@
                 <input type="url" id="imageUrl" placeholder="Or paste image URL here..." style="width: 70%; padding: 0.5rem; border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 5px; margin-right: 0.5rem;">
                 <button onclick="addImageFromUrl()" style="padding: 0.5rem 1rem; background: linear-gradient(45deg, #667eea, #f5576c); color: white; border: none; border-radius: 5px; cursor: pointer;">Add URL</button>
             </div>
-            <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">💡 Tip: You can also paste images with Ctrl+V</p>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">💡 Tip: You can also paste images with Ctrl+V. Colors will be automatically extracted from reference images! 🎨</p>
             <div class="reference-images" id="referenceImages">
                 <!-- Reference images will appear here -->
             </div>
@@ -533,33 +533,23 @@
                 // Build the full prompt
                 let fullPrompt = `${prompt}, ${style} style`;
                 
-                // Add color scheme context
-                switch(colorScheme) {
-                    case 'vanilla':
-                        fullPrompt += ', vanilla cream colors (beige, cream, light brown, off-white)';
-                        break;
-                    case 'websim':
-                        fullPrompt += ', Websim brand colors (blue, purple, teal gradients)';
-                        break;
-                    case 'mixed':
-                        fullPrompt += ', mixing vanilla cream colors with Websim brand colors (blue, purple, teal)';
-                        break;
-                    case 'monochrome':
-                        fullPrompt += ', monochrome design, black and white';
-                        break;
-                }
-
-                fullPrompt += ', logo design, clean background, professional, high quality';
-
-                // If there are reference images, analyze them first to enhance the prompt
+                // If there are reference images, extract colors from them first
                 if (referenceImages.length > 0) {
-                    const analysisPrompt = `Analyze these reference images and describe the key design elements, colors, style, and aesthetic that should be incorporated into a Websim Vanilla logo. Focus on: color palette, design style, typography, composition, and any distinctive visual elements. Provide specific details that would help create a cohesive logo design.`;
+                    generateBtn.innerHTML = '<div class="spinner"></div>Analyzing Colors...';
                     
-                    const messages = [
+                    const colorAnalysisPrompt = `Analyze these reference images and extract the exact color palette. Provide a detailed description of:
+1. Primary colors (hex codes if possible, or specific color names)
+2. Secondary/accent colors
+3. Color temperature (warm/cool)
+4. Color harmony and relationships
+5. Any gradients or color transitions
+Focus specifically on colors that would work well for a Websim Vanilla logo design. Describe the colors in a way that can be used in an image generation prompt.`;
+                    
+                    const colorMessages = [
                         {
                             role: "user",
                             content: [
-                                { type: "text", text: analysisPrompt },
+                                { type: "text", text: colorAnalysisPrompt },
                                 ...referenceImages.map(img => ({
                                     type: "image_url",
                                     image_url: { url: img.dataUrl }
@@ -568,12 +558,56 @@
                         }
                     ];
 
-                    const analysis = await websim.chat.completions.create({
-                        messages: messages
+                    const colorAnalysis = await websim.chat.completions.create({
+                        messages: colorMessages
                     });
 
-                    fullPrompt = `${fullPrompt}. Reference style: ${analysis.content}`;
+                    // Update loading message
+                    generateBtn.innerHTML = '<div class="spinner"></div>Extracting Design Elements...';
+
+                    const styleAnalysisPrompt = `Based on these reference images, describe the design style, typography, composition, and visual elements (excluding colors, as they've been analyzed separately) that should be incorporated into a Websim Vanilla logo.`;
+                    
+                    const styleMessages = [
+                        {
+                            role: "user",
+                            content: [
+                                { type: "text", text: styleAnalysisPrompt },
+                                ...referenceImages.map(img => ({
+                                    type: "image_url",
+                                    image_url: { url: img.dataUrl }
+                                }))
+                            ]
+                        }
+                    ];
+
+                    const styleAnalysis = await websim.chat.completions.create({
+                        messages: styleMessages
+                    });
+
+                    // Use extracted colors instead of predefined color scheme
+                    fullPrompt = `${fullPrompt}. Color palette: ${colorAnalysis.content}. Design style: ${styleAnalysis.content}`;
+                    
+                    // Update loading message
+                    generateBtn.innerHTML = '<div class="spinner"></div>Generating Logo...';
+                } else {
+                    // Add color scheme context only if no reference images
+                    switch(colorScheme) {
+                        case 'vanilla':
+                            fullPrompt += ', vanilla cream colors (beige, cream, light brown, off-white)';
+                            break;
+                        case 'websim':
+                            fullPrompt += ', Websim brand colors (blue, purple, teal gradients)';
+                            break;
+                        case 'mixed':
+                            fullPrompt += ', mixing vanilla cream colors with Websim brand colors (blue, purple, teal)';
+                            break;
+                        case 'monochrome':
+                            fullPrompt += ', monochrome design, black and white';
+                            break;
+                    }
                 }
+
+                fullPrompt += ', logo design, clean background, professional, high quality';
 
                 // Generate the image
                 const result = await websim.imageGen({
@@ -587,7 +621,8 @@
                     url: result.url,
                     prompt: fullPrompt,
                     timestamp: new Date().toLocaleTimeString(),
-                    hasReferences: referenceImages.length > 0
+                    hasReferences: referenceImages.length > 0,
+                    colorExtracted: referenceImages.length > 0
                 };
 
                 generatedLogos.unshift(logoData);
@@ -611,7 +646,7 @@
                     <div class="result-image">
                         <img src="${logo.url}" alt="Generated Websim Vanilla Logo">
                     </div>
-                    <div class="logo-title">Generated Logo #${generatedLogos.length - index} ${logo.hasReferences ? '📎' : ''}</div>
+                    <div class="logo-title">Generated Logo #${generatedLogos.length - index} ${logo.hasReferences ? '📎' : ''} ${logo.colorExtracted ? '🎨' : ''}</div>
                     <div class="logo-description">Created at ${logo.timestamp}</div>
                     <div class="prompt-used">"${logo.prompt}"</div>
                     <div class="rating-stars">
