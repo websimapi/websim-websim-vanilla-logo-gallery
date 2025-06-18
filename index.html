@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f5f3f0 0%, #e8e2db 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
             min-height: 100vh;
             padding: 2rem;
         }
@@ -25,17 +25,22 @@
 
         .header h1 {
             font-size: 3rem;
-            color: #8B4513;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: none;
+            font-weight: bold;
         }
 
         .header p {
             font-size: 1.2rem;
-            color: #5D4037;
+            color: white;
             max-width: 600px;
             margin: 0 auto;
             line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         .logo-grid {
@@ -47,29 +52,32 @@
         }
 
         .logo-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .logo-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
         }
 
         .logo-container {
             width: 200px;
             height: 200px;
             margin: 0 auto 1.5rem;
-            background: #f8f8f8;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(245, 87, 108, 0.1));
             border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border: 2px solid rgba(102, 126, 234, 0.2);
         }
 
         .logo-container img {
@@ -81,13 +89,16 @@
         .logo-title {
             font-size: 1.3rem;
             font-weight: bold;
-            color: #8B4513;
+            background: linear-gradient(45deg, #667eea, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
         }
 
         .logo-description {
             font-size: 0.9rem;
-            color: #666;
+            color: #555;
             line-height: 1.4;
         }
 
@@ -107,7 +118,7 @@
 
         .star:hover,
         .star.active {
-            color: #FFD700;
+            color: #f5576c;
         }
     </style>
 </head>
@@ -256,4 +267,3 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-
