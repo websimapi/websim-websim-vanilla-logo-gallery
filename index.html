@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Websim Vanilla Logo Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e2db 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #8B4513;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #5D4037;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .logo-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .logo-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            background: #f8f8f8;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .rating-stars {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍦 Websim Vanilla Logo Gallery</h1>
+        <p>Exploring logo concepts that blend the sweetness of vanilla ice cream with the simplicity of vanilla design philosophy. Rate your favorites!</p>
+    </div>
+
+    <div class="logo-grid">
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-minimal-scoop.png" alt="Minimal Scoop Logo">
+            </div>
+            <div class="logo-title">Minimal Scoop</div>
+            <div class="logo-description">Clean, minimalist ice cream scoop with "Websim" text in modern typography</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-geometric-cone.png" alt="Geometric Cone Logo">
+            </div>
+            <div class="logo-title">Geometric Cone</div>
+            <div class="logo-description">Abstract geometric ice cream cone with vanilla color palette and clean lines</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-simple-w.png" alt="Simple W Logo">
+            </div>
+            <div class="logo-title">Simple W</div>
+            <div class="logo-description">Minimalist "W" lettermark with vanilla cream texture and subtle ice cream elements</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-vanilla-bean.png" alt="Vanilla Bean Logo">
+            </div>
+            <div class="logo-title">Vanilla Bean</div>
+            <div class="logo-description">Elegant vanilla bean pod integrated with modern web symbols and clean typography</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-ice-cream-code.png" alt="Ice Cream Code Logo">
+            </div>
+            <div class="logo-title">Ice Cream Code</div>
+            <div class="logo-description">Ice cream scoop with subtle code brackets, representing web development simplicity</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-cream-swirl.png" alt="Cream Swirl Logo">
+            </div>
+            <div class="logo-title">Cream Swirl</div>
+            <div class="logo-description">Elegant cream swirl pattern forming a "W" shape with vanilla color gradients</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-vintage-scoop.png" alt="Vintage Scoop Logo">
+            </div>
+            <div class="logo-title">Vintage Scoop</div>
+            <div class="logo-description">Retro-inspired ice cream scoop with classic diner aesthetics and warm vanilla tones</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+
+        <div class="logo-card">
+            <div class="logo-container">
+                <img src="logo-modern-badge.png" alt="Modern Badge Logo">
+            </div>
+            <div class="logo-title">Modern Badge</div>
+            <div class="logo-description">Contemporary badge design with ice cream elements and "Vanilla" emphasis</div>
+            <div class="rating-stars">
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+                <span class="star">⭐</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple star rating functionality
+        document.querySelectorAll('.rating-stars').forEach(starContainer => {
+            const stars = starContainer.querySelectorAll('.star');
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('active', i <= index);
+                    });
+                });
+            });
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
